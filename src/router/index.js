@@ -39,9 +39,11 @@ const routes = [
     path: '/posts/:id',
     name: 'PostDetail',
     component: PostDetailView,
+    // props: true,
+    props: (route) => ({ id: parseInt(route.params.id) }),
   },
   {
-    path: '/about/:id/edit',
+    path: '/posts/:id/edit',
     name: 'PostEdit',
     component: PostEditView,
   },
@@ -75,8 +77,13 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory('/'),
+  history: createWebHistory(),
+  // history: createWebHashHistory(),
   routes, // Short for routes:routes
 });
+
+// HashMode
+// 장점 : url 뒤에 #이 붙는다. #뒤에 주소는 무시되는데 서버배포시에 서버설정 필요없이 할 수 있다.
+// 단점 : SEO에는 나쁘다.
 
 export default router;
