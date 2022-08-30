@@ -16,7 +16,9 @@
         <button @click="goListPage" class="btn btn-outline-dark">목록</button>
       </div>
       <div class="col-auto">
-        <button @click="goEditPage" class="btn btn-outline-dark">수정</button>
+        <button @click="goEditPage" class="btn btn-outline-primary">
+          수정
+        </button>
       </div>
       <div class="col-auto">
         <button class="btn btn-outline-danger" @click="remove">삭제</button>
@@ -32,7 +34,7 @@ import { ref } from 'vue';
 
 // 내장 속성 setup안에서 사용하는 법, define<props> 함수 이용
 const props = defineProps({
-  id: Number,
+  id: String,
 });
 const router = useRouter();
 /**

@@ -69,7 +69,7 @@ const setForm = ({ title, contents, createdAt }) => {
 const edit = async () => {
   try {
     await updatePost(id, { ...form.value }); // spread operator
-    router.push({ name: 'PostList', params: { id } });
+    router.push({ name: 'PostDetail', params: { id } });
   } catch (error) {
     console.error(error);
   }
