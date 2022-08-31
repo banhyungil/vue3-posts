@@ -2,73 +2,28 @@
   <div>
     <h2>게시글 목록</h2>
     <hr class="mr-4" />
-    <form @submit.prevent>
-      <div class="row g-3">
-        <div class="col">
-          <input
-            v-model="reqParams.title_like"
-            type="text"
-            class="form-control"
-          />
-        </div>
-        <div class="col-3">
-          <select class="form-select" v-model="reqParams._limit">
-            <option value="3">3개씩 보기</option>
-            <option value="6">6개씩 보기</option>
-            <option value="9">9개씩 보기</option>
-          </select>
-        </div>
-      </div>
-    </form>
+    <PostFilter
+      v-model:title="reqParams.title_like"
+      v-model:limit="reqParams._limit"
+    ></PostFilter>
     <hr class="my-4" />
-    <div class="row g-3">
-      <div v-for="post in posts" :key="post.id" class="col-4">
+    <AppGrid :items="posts">
+      <template v-slot="{ item }">
         <PostItem
-          :title="post.title"
-          :contents="post.contents"
-          :created-at="post.createdAt"
-          @click="goPage(post.id)"
+          :title="item.title"
+          :contents="item.contents"
+          :created-at="item.createdAt"
+          @click="goPage(item.id)"
         ></PostItem>
-      </div>
-    </div>
-    <nav class="mt-5" aria-label="Page navigation example">
-      <ul class="pagination justify-content-center">
-        <li class="page-item" :class="{ disabled: reqParams._page === 1 }">
-          <a
-            class="page-link"
-            aria-label="Previous"
-            @click.prevent="reqParams._page--"
-          >
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <li
-          class="page-item"
-          v-for="page in pageCount"
-          :key="page"
-          :class="{ active: reqParams._page === page }"
-        >
-          <a class="page-link" @click.prevent="reqParams._page = page">
-            {{ page }}
-          </a>
-        </li>
-        <li
-          class="page-item"
-          :class="{ disabled: reqParams._page === pageCount }"
-        >
-          <a
-            class="page-link"
-            aria-label="Next"
-            @click.prevent="reqParams._page++"
-          >
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
+      </template>
+    </AppGrid>
+    <AppPagination
+      v-model:curPage="reqParams._page"
+      :page-count="pageCount"
+    ></AppPagination>
     <hr class="my-5" />
     <AppCard>
-      <PostDetail :id="2"></PostDetail>
+      <PostDetail :id="'1'"></PostDetail>
     </AppCard>
   </div>
 </template>
@@ -77,6 +32,9 @@
 import PostItem from '@/components/posts/PostItem.vue';
 import PostDetail from '@/views/posts/PostDetailView.vue';
 import AppCard from '@/components/AppCard.vue';
+import AppPagination from '@/components/AppPagination.vue';
+import AppGrid from '@/components/AppGrid.vue';
+import PostFilter from '@/components/posts/PostFilter.vue';
 import { getPosts } from '@/api/posts.js';
 import { ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
