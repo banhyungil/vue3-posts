@@ -22,12 +22,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { createPost } from '@/api/posts';
-import { format } from 'date-fns';
 import PostForm from '@/components/posts/PostForm.vue';
 
+const format = inject('format');
 const router = useRouter();
 const form = ref({
   title: null,
