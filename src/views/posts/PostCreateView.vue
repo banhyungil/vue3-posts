@@ -7,7 +7,7 @@
       v-model:title="form.title"
       v-model:contents="form.contents"
     >
-      <template #actions>
+      <template v-slot:actions>
         <button
           type="button"
           class="btn btn-outline-dark me-2"
@@ -26,12 +26,15 @@ import { inject, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { createPost } from '@/api/posts';
 import PostForm from '@/components/posts/PostForm.vue';
+import { useAlert } from '@/composables/alert';
+
+const { vAlert, vAlertS } = useAlert();
 
 const format = inject('format');
 const router = useRouter();
 const form = ref({
   title: null,
-  content: null,
+  contents: null,
 });
 
 const save = () => {
@@ -40,11 +43,13 @@ const save = () => {
       ...form.value,
       createdAt: format(new Date(), 'yyyy-MM-dd'),
     };
-
     createPost(data);
+
+    vAlertS('등록이 완료되었습니다.');
     router.push({ name: 'PostList' });
   } catch (error) {
     console.log(error);
+    vAlert(error.message);
   }
 };
 const goListPage = () => router.push({ name: 'PostList' });

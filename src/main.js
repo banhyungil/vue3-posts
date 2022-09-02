@@ -6,10 +6,8 @@ import router from '@/router';
 import focus from './directive/focus';
 import color from './directive/color';
 import dateFns from './plugins/date-fns';
-// import globalComponents from './plugins/global-components';
 
 const app = createApp(App);
-// app.use(globalComponents);
 app.use(router);
 app.use(dateFns);
 app.directive('focus', focus);
