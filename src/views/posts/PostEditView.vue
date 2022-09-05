@@ -1,7 +1,10 @@
 <template>
-  <div>
+  <AppLoading v-if="loading"></AppLoading>
+  <AppError v-else-if="error" :message="error.message"></AppError>
+  <div v-else>
     <h2>게시글 수정</h2>
     <hr class="my-4" />
+    <AppError v-if="editError" :message="editError.message" />
     <PostForm
       @submit.prevent="edit"
       v-model:title="form.title"
@@ -15,7 +18,17 @@
         >
           취소
         </button>
-        <button class="btn btn-primary">수정</button>
+        <button class="btn btn-primary" :disabled="editLoading">
+          <template v-if="editLoading">
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            <span class="visually-hidden">Loading...</span>
+          </template>
+          <template v-else>수정</template>
+        </button>
       </template>
     </PostForm>
   </div>
@@ -33,6 +46,9 @@ const route = useRoute();
 const router = useRouter();
 const id = route.params.id;
 
+const loading = ref(false);
+const error = ref(null);
+
 const form = ref({
   title: null,
   contents: null,
@@ -41,11 +57,14 @@ const form = ref({
 
 const fetchPost = async () => {
   try {
+    loading.value = true;
     const { data } = await getPostById(id);
     setForm(data);
-  } catch (error) {
-    console.error(error);
-    vAlert(error.message);
+  } catch (err) {
+    error.value = err;
+    vAlert(err.message);
+  } finally {
+    loading.value = false;
   }
 };
 fetchPost();
@@ -56,14 +75,19 @@ const setForm = ({ title, contents, createdAt }) => {
   form.value.createdAt = createdAt;
 };
 
+const editError = ref(null);
+const editLoading = ref(false);
 const edit = async () => {
   try {
+    editLoading.value = true;
     await updatePost(id, { ...form.value }); // spread operator
     vAlertS('수정이 완료되었습니다!');
     router.push({ name: 'PostDetail' });
-  } catch (error) {
-    console.error(error);
-    vAlert(error.message);
+  } catch (err) {
+    editError.value = err;
+    vAlert(err.message);
+  } finally {
+    editLoading.value = false;
   }
 };
 

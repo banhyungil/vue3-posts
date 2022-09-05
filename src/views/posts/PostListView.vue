@@ -7,21 +7,25 @@
       v-model:limit="reqParams._limit"
     ></PostFilter>
     <hr class="my-4" />
-    <AppGrid :items="posts">
-      <template v-slot:default="{ item }">
-        <PostItem
-          :title="item.title"
-          :contents="item.contents"
-          :created-at="item.createdAt"
-          @click="goPage(item.id)"
-          @modal="openModal(item)"
-        ></PostItem>
-      </template>
-    </AppGrid>
-    <AppPagination
-      v-model:curPage="reqParams._page"
-      :page-count="pageCount"
-    ></AppPagination>
+    <AppLoading v-if="loading"></AppLoading>
+    <AppError v-else-if="error" :message="error.message"></AppError>
+    <template v-else>
+      <AppGrid :items="posts">
+        <template v-slot:default="{ item }">
+          <PostItem
+            :title="item.title"
+            :contents="item.contents"
+            :created-at="item.createdAt"
+            @click="goPage(item.id)"
+            @modal="openModal(item)"
+          ></PostItem>
+        </template>
+      </AppGrid>
+      <AppPagination
+        v-model:curPage="reqParams._page"
+        :page-count="pageCount"
+      ></AppPagination>
+    </template>
 
     <Teleport to="#modal">
       <PostModal
@@ -50,9 +54,13 @@ import { getPosts } from '@/api/posts.js';
 import { ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { computed } from 'vue';
+import AppLoading from '@/components/app/AppLoading.vue';
+import AppError from '@/components/app/AppError.vue';
 
 const router = useRouter();
 const posts = ref([]);
+const error = ref(null);
+const loading = ref(false);
 const reqParams = ref({
   _sort: 'createdAt',
   _order: 'desc',
@@ -75,11 +83,15 @@ const pageCount = computed(() =>
 // ({ a: numbers[0], b: numbers[1] } = obj);  // 소괄호로 '{}'block으로 인식하지 않게 한다.
 const fetchPosts = async () => {
   try {
+    loading.value = true;
     const { data, headers } = await getPosts(reqParams.value);
     posts.value = data;
     totalCount.value = headers['x-total-count'];
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
+    error.value = err;
+  } finally {
+    loading.value = false;
   }
 };
 watchEffect(fetchPosts); // 초기에 바로 실행됨.
