@@ -40,7 +40,7 @@
     </Teleport>
     <hr class="my-5" />
     <AppCard>
-      <PostDetail :id="'1'"></PostDetail>
+      <PostDetail :id="'2'"></PostDetail>
     </AppCard>
   </div>
 </template>
@@ -50,17 +50,14 @@ import PostItem from '@/components/posts/PostItem.vue';
 import PostDetail from '@/views/posts/PostDetailView.vue';
 import PostFilter from '@/components/posts/PostFilter.vue';
 import PostModal from '@/components/posts/PostModal.vue';
-import { getPosts } from '@/api/posts.js';
-import { ref, watchEffect } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { computed } from 'vue';
 import AppLoading from '@/components/app/AppLoading.vue';
 import AppError from '@/components/app/AppError.vue';
+import { useAxios } from '@/hooks/useAxios';
 
 const router = useRouter();
-const posts = ref([]);
-const error = ref(null);
-const loading = ref(false);
 const reqParams = ref({
   _sort: 'createdAt',
   _order: 'desc',
@@ -69,33 +66,18 @@ const reqParams = ref({
   title_like: '',
 });
 
+const {
+  response,
+  data: posts,
+  error,
+  loading,
+} = useAxios('/posts', { method: 'get', params: reqParams });
+
 // pagination
-const totalCount = ref(0);
+const totalCount = computed(() => response.value.headers['x-total-count']);
 const pageCount = computed(() =>
   Math.ceil(totalCount.value / reqParams.value._limit),
 );
-
-// destructuring assignment two ways
-// 1. Binding pattern : 선언식과 함께 사용 (var, let, const)
-// 2. assignment pattern : keyword로 시작하지 않음, 정해진 target key 위치에 할당 됨.
-// const numbers = [];
-// const obj = {a:1, b:2};
-// ({ a: numbers[0], b: numbers[1] } = obj);  // 소괄호로 '{}'block으로 인식하지 않게 한다.
-const fetchPosts = async () => {
-  try {
-    loading.value = true;
-    const { data, headers } = await getPosts(reqParams.value);
-    posts.value = data;
-    totalCount.value = headers['x-total-count'];
-  } catch (err) {
-    console.log(err);
-    error.value = err;
-  } finally {
-    loading.value = false;
-  }
-};
-watchEffect(fetchPosts); // 초기에 바로 실행됨.
-//fetchPosts();
 
 const goPage = (id) => {
   // router.push(`/posts/${id}`);

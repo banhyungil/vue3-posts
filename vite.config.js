@@ -10,7 +10,7 @@ export default defineConfig({
     vue(),
     Components({
       dirs: ['src/components/app'],
-      dts: false,
+      dts: true,
     }),
   ],
   resolve: {

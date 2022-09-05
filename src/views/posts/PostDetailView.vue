@@ -47,16 +47,18 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { deletePost, getPostById } from '@/api/posts';
+import { deletePost } from '@/api/posts';
 import { ref } from 'vue';
+import { useAxios } from '@/hooks/useAxios';
+import { useAlert } from '@/composables/alert';
 
 // 내장 속성 setup안에서 사용하는 법, define<props> 함수 이용
 const props = defineProps({
   id: String,
 });
 const router = useRouter();
-const error = ref(null);
-const loading = ref(false);
+
+const { data: post, loading, error } = useAxios(`/posts/${props.id}`);
 /**
  * object 선언시 ref, reactive 비교
  * ref
@@ -71,45 +73,36 @@ const loading = ref(false);
  *
  * ref, reactive중 하나로 선택하여 사용하면 일관성있어 가독성이 증가하지 않을가...
  */
-const post = ref({});
-
-const fetchPost = async () => {
-  try {
-    loading.value = true;
-    const { data } = await getPostById(props.id);
-    setPost(data);
-  } catch (err) {
-    error.value = err;
-  } finally {
-    loading.value = false;
-  }
-};
-
-const setPost = ({ title, contents, createdAt }) => {
-  post.value.title = title;
-  post.value.contents = contents;
-  post.value.createdAt = createdAt;
-};
 
 const goListPage = () => {
   router.push({ name: 'PostList' });
 };
-fetchPost();
 
-const removeError = ref(null);
-const removeLoading = ref(false);
-const remove = async () => {
-  try {
-    removeLoading.value = true;
-    if (confirm('삭제 하시겠습니까?') === false) return;
+const { vAlert, vAlertS } = useAlert();
 
-    await deletePost(props.id);
+// remove
+const url = `/posts/${props.id}`;
+const config = { method: 'delete' };
+const options = {
+  immediate: false,
+  onSuccess: () => {
+    vAlertS('성공적으로 삭제 했습니다.');
     router.push({ name: 'PostList' });
-  } catch (err) {
-    removeError.value = err;
-  } finally {
-    removeLoading.value = false;
-  }
+  },
+  onError: (err) => {
+    vAlert(err.message);
+  },
+};
+
+const {
+  loading: removeLoading,
+  error: removeError,
+  execute,
+} = useAxios(url, config, options);
+
+const remove = async () => {
+  if (confirm('삭제 하시겠습니까?') === false) return;
+  execute();
 };
 
 const goEditPage = () => {

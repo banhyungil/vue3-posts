@@ -1,12 +1,6 @@
 {
   "posts": [
     {
-      "id": 1,
-      "title": "제목1",
-      "contents": "내용1",
-      "createdAt": "2021-01-01"
-    },
-    {
       "id": 2,
       "title": "제목2",
       "contents": "내용2",
@@ -19,28 +13,10 @@
       "createdAt": "2023-03-03"
     },
     {
-      "id": 4,
-      "title": "제목4",
-      "contents": "내용4",
-      "createdAt": "2024-04-04"
-    },
-    {
-      "id": 5,
-      "title": "제목5",
-      "contents": "내용5",
-      "createdAt": "2025-05-05"
-    },
-    {
       "id": 6,
       "title": "제목6",
       "contents": "내용6",
       "createdAt": "2026-06-06"
-    },
-    {
-      "id": 7,
-      "title": "제목7",
-      "contents": "내용7",
-      "createdAt": "2027-07-07"
     },
     {
       "title": "제목99",
@@ -106,6 +82,60 @@
       "contents": "내용해볼게요",
       "createdAt": "2022-09-02",
       "id": 21
+    },
+    {
+      "title": "bbbb",
+      "contents": "bbbb",
+      "createdAt": "2022-09-05",
+      "id": 23
+    },
+    {
+      "title": "cccc",
+      "contents": "cccc",
+      "createdAt": "2022-09-05",
+      "id": 24
+    },
+    {
+      "title": "dddd",
+      "contents": "dddd",
+      "createdAt": "2022-09-05",
+      "id": 25
+    },
+    {
+      "title": "ffff",
+      "contents": "ffff",
+      "createdAt": "2022-09-05",
+      "id": 26
+    },
+    {
+      "title": "gggg",
+      "contents": "ggg",
+      "createdAt": "2022-09-05",
+      "id": 27
+    },
+    {
+      "title": "gggg",
+      "contents": "gggg",
+      "createdAt": "2022-09-05",
+      "id": 28
+    },
+    {
+      "title": "gggg",
+      "contents": "gggg",
+      "createdAt": "2022-09-05",
+      "id": 29
+    },
+    {
+      "id": 30
+    },
+    {
+      "id": 31
+    },
+    {
+      "title": "hhhh",
+      "contents": "hhhh",
+      "createdAt": "2022-09-05",
+      "id": 32
     }
   ]
 }
